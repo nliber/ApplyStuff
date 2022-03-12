@@ -10,12 +10,12 @@ inline void f(int, int, int) { std::cout << __PRETTY_FUNCTION__ << '\n'; }
 inline void f(int, int, int, int) { std::cout << __PRETTY_FUNCTION__ << '\n'; }
 #endif
 
-template<typename T, size_t I>
+template <typename T, size_t I>
 struct Identity {
     using type = T;
 };
 
-template<typename T, size_t I>
+template <typename T, size_t I>
 using Identity_t = typename Identity<T, I>::type;
 
 template <typename F, typename A, size_t... I>
@@ -33,18 +33,17 @@ constexpr decltype(auto) apply(F&& f, A&& a) {
 
 template <typename F, typename T, size_t N>
 constexpr decltype(auto) apply(F&& f, T (&array)[N]) {
-    return apply_impl(static_cast<F&&>(f), array, std::make_index_sequence<N>());
+    return apply_impl(static_cast<F&&>(f), array,
+                      std::make_index_sequence<N>());
 }
 
-template<typename T, size_t N, size_t... I>
-constexpr decltype(auto) apply_to_f_impl(T (&array)[N], std::index_sequence<I...>) {
-    //static_cast<void(Identity_t<T, I>...)>(f)(array[I]...);
-    apply(static_cast<void(*)(Identity_t<T, I>...)>(f), array);
-    //apply(static_cast<void(*)(int,int,int)>(f), array);
+template <typename T, size_t N, size_t... I>
+constexpr decltype(auto) apply_to_f_impl(T (&array)[N],
+                                         std::index_sequence<I...>) {
+    static_cast<void (*)(Identity_t<T, I>...)>(f)(array[I]...);
 }
 
-
-template<typename T, size_t N>
+template <typename T, size_t N>
 constexpr decltype(auto) apply_to_f(T (&array)[N]) {
     return apply_to_f_impl(array, std::make_index_sequence<N>());
 }
