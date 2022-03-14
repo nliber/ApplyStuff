@@ -11,12 +11,7 @@ inline void f(int, int, int, int) { std::cout << __PRETTY_FUNCTION__ << '\n'; }
 #endif
 
 template <typename T, size_t I>
-struct Identity {
-    using type = T;
-};
-
-template <typename T, size_t I>
-using Identity_t = typename Identity<T, I>::type;
+using Identity_t = T;
 
 template <typename F, typename A, size_t... I>
 constexpr decltype(auto) apply_impl(F&& f, A&& a, std::index_sequence<I...>) {
